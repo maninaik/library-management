@@ -3,6 +3,8 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const mongoose = require('mongoose')
+
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -13,12 +15,33 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+//logger
 app.use(logger('dev'));
+
+//for using post
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+//for static files
 app.use(express.static(path.join(__dirname, 'public')));
 
+//db
+
+//database url 
+var mongodb = 'mongodb+srv://libraryManagementUser:1234@cluster0.brvbr.mongodb.net/library-management-db?retryWrites=true&w=majority'
+
+
+mongoose.connect(mongodb, {
+    useNewUrlParser:true,
+    useUnifiedTopology:true
+})
+
+var db = mongoose.connection
+
+db.on('error', console.error.bind(console, 'Mongo DB connection error: '))
+
+//routes
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
