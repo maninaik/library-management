@@ -8,6 +8,7 @@ const mongoose = require('mongoose')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var catalogRouter = require('./routes/catalog')
 
 var app = express();
 
@@ -29,7 +30,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //db
 
 //database url 
-var mongodb = 'mongodb+srv://libraryManagementUser:1234@cluster0.brvbr.mongodb.net/library-management-db?retryWrites=true&w=majority'
+var mongodb = 'mongodb+srv://libraryManagementUser:12345@cluster0.brvbr.mongodb.net/library-management-db?retryWrites=true&w=majority'
 
 
 mongoose.connect(mongodb, {
@@ -44,6 +45,7 @@ db.on('error', console.error.bind(console, 'Mongo DB connection error: '))
 //routes
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/catalog', catalogRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

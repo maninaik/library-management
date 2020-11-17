@@ -6,3 +6,19 @@ body {
 a {
   color: #00B7FF;
 }
+
+ul li{
+  padding : 4px;
+}
+
+.sidebar-container{
+  border: solid 1px #dce3e5;
+  box-shadow: 0px 0px 7px 1px #dce3e5dc;
+}
+
+.sidebar-nav {
+  margin-top: 20px;
+  padding: 0;
+  list-style: none;
+  
+}
