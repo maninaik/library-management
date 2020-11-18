@@ -1,13 +1,36 @@
-var authorModel = require('../models/author')
+var AuthorModel = require('../models/author');
+var BookModel = require('../models/book');
+var async = require('async');
 
 // to retrieve all authors
 exports.author_list = (req, res) => {
-    res.send('NOT IMPLEMENTED author list')
+    AuthorModel.find()
+    .sort([['family_name', 'ascending']])
+    .exec( (err, results) => {
+        res.render('author_list', {title: 'Author List', author_list: results});
+    });
 }
 
 //to get details of a particular author
-exports.author_detail = (req, res) => {
-    res.send('NOT IMPLEMENTED author detail' + req.paarams.id)
+exports.author_detail = (req, res, next) => {
+    async.parallel({
+            author : function (cb){
+                AuthorModel.findById(req.params.id)
+                .exec(cb);
+            },
+            author_books : function (cb) {
+                BookModel.find( { author : req.params.id } )
+                .populate('author')
+                .populate('genre')
+                .exec(cb);
+            }
+        },
+        function (err, results) {
+            if (err) { return next(err) }
+
+            res.render('author_detail', { title : results.author.name, author : results.author, author_books : results.author_books });
+        }
+    );
 }
 
 // to get author create form
