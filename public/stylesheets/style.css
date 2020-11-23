@@ -22,3 +22,15 @@ ul li{
   list-style: none;
   
 }
+
+.form-check label,input {
+  cursor: pointer;
+}
+
+form {
+  width: 50%;
+}
+
+.error,input,button{
+  margin-bottom: .5rem;
+}
