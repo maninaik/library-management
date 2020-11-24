@@ -95,7 +95,33 @@ exports.author_delete_get = (req, res, next) => {
 
 //to handle post on author delete form
 exports.author_delete_post = (req, res) => {
-    res.send('NOT IMPLEMENTED author delete post');
+    async.parallel( {
+            author : function (cb) {
+                AuthorModel.findById(req.params.id).exec(cb);
+            },
+            books : function(cb) {
+                BookModel.find( { 'author' : req.params.id }).exec(cb);
+                
+            }
+        },  
+        function(err, results) {
+            if (err) { return next(err); }
+            if(results.author == null) {
+                res.redirect('/catalog/authors');
+            }
+            
+            if(results.books.length > 0){
+                res.render('author_delete', {title : 'Delete Author', author : results.author , books : results.books });
+            }
+            else {
+                AuthorModel.findByIdAndDelete(req.body.authorid, (err) => {
+                    if (err) { return next(err); }
+                    res.redirect('/catalog/authors');
+                });
+            }
+        }
+    );
+
 }
 
 // to handle get on author update
