@@ -3,6 +3,10 @@ extends layout
 block content 
     h1= title 
     form(action="", method="POST")
+        -var dt = new Date(author.date_of_birth);
+        -var date_of_birth = dt.getFullYear() + '-' + (dt.getMonth() + 1).toString().padStart(2, 0) + '-' + (dt.getDate().toString().padStart(2, 0));   
+        -var dt2 = new Date(author.date_of_death);
+        -var date_of_death = dt2.getFullYear() + '-' + (dt2.getMonth() + 1).toString().padStart(2, 0) + '-' + (dt2.getDate().toString().padStart(2, 0));    
         .form-group 
             label(for="first_name") First Name :
             input#first_name.form-control(type="text" placeholder="First Name (Ram)" name="first_name" value=(undefined === author ? '' : author.first_name), required)
@@ -10,9 +14,9 @@ block content
             input#family_name.form-control( type="text" placeholder="Last Name (Surname)" name="family_name" value=(undefined===author ? '' : author.family_name) , required)
         .form-group 
             label(for="date_of_birth") Date of birth :
-            input#date_of_birth.form-control(type="date" name="date_of_birth" value=(undefined === author ? '' : author.date_of_birth) )
+            input#date_of_birth.form-control(type="date" name="date_of_birth" value=(undefined === author ? '' : date_of_birth) )
             label(for="date_of_death") Date of death : 
-            input#date_of_death.form-control(type="date" name="date_of_death" value=(undefined === author ? '' : author.date_of_death) )
+            input#date_of_death.form-control(type="date" name="date_of_death" value=(undefined === author ? '' : date_of_death) )
         button.btn.btn-primary(type="submit") Submit
         if errors 
             each error in errors 

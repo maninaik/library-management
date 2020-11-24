@@ -19,6 +19,10 @@ block content
     form(method='POST' action=bookinstance.url+'/delete')
         .form-group 
             input#bookinstanceid.from-control(type='hidden' value=bookinstance._id name='bookinstanceid')
-        button.btn.btn-primary Delete 
+        button.btn.btn-primary Delete Book Instance
+    
+    hr 
+    p 
+        a(href=bookinstance.url+'/update') Update Book Instance
 
     

@@ -51,18 +51,19 @@ exports.author_create_post = [
     (req, res, next) => {
         
         const errors = validationResult(req);
+
+        var author = AuthorModel({
+            first_name : req.body.first_name,
+            family_name : req.body.family_name,
+            date_of_birth : req.body.date_of_birth,
+            date_of_death : req.body.date_of_death,
+        });
+
         //check for any errors
         if(!errors.isEmpty()){
-            res.render('author_form', {title : 'Create Author', author : req.body, errors : errors.array()});
+            res.render('author_form', {title : 'Create Author', author, errors : errors.array()});
         }
         else{
-            
-            var author = AuthorModel({
-                first_name : req.body.first_name,
-                family_name : req.body.family_name,
-                date_of_birth : req.body.date_of_birth,
-                date_of_death : req.body.date_of_death,
-            });
 
             author.save( (err) => {
                 if(err) { return next(err); }
@@ -70,7 +71,7 @@ exports.author_create_post = [
             });
         }
     }
-]
+];
 
 //to handle get on author delete form
 exports.author_delete_get = (req, res, next) => {
@@ -126,11 +127,44 @@ exports.author_delete_post = (req, res) => {
 
 // to handle get on author update
 exports.author_update_get = (req, res) => {
-    res.send('NOT IMPLEMENTED author update get')
+    AuthorModel.findById(req.params.id, (err, author) => {
+        if (err) { return next(err); }
+        res.render('author_form', {title : 'Update Author', author});
+    });
 }
 
 // to handle post on author update form
-exports.author_update_post = (req, res) => {
-    res.send('NOT IMPLEMENTED author update post')
-}
+exports.author_update_post = [
+    body('first_name').trim().isLength({min:1}).escape().withMessage('First Name must be specified.')
+    .isAlphanumeric().withMessage('First name should only contain alpha-numeric characters.'),
+    body('family_name').trim().isLength({min:1}).escape().withMessage('Last Name must be specified.')
+    .isAlphanumeric().withMessage('Last name should only contain alpha-numeric characters.'),
+    body('date_of_birth', 'Invalid date of birth').optional({checkFalsy : true}).isISO8601().toDate(),
+    body('date_of_death', 'Invalid date of death').optional({checkFalsy : true}).isISO8601().toDate()
+    ,
+    (req, res, next) => {
+        
+        const errors = validationResult(req);
+
+        var author = AuthorModel({
+            first_name : req.body.first_name,
+            family_name : req.body.family_name,
+            date_of_birth : req.body.date_of_birth,
+            date_of_death : req.body.date_of_death,
+            _id : req.params.id
+        });
+
+        //check for any errors
+        if(!errors.isEmpty()){
+            res.render('author_form', {title : 'Update Author', author, errors : errors.array()});
+        }
+        else{
+            AuthorModel.findByIdAndUpdate(req.params.id, author, (err) => {
+                if(err){ return next(err); }
+
+                res.redirect(author.url);
+            });
+        }
+    }
+];
 

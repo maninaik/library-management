@@ -2,6 +2,9 @@ extends layout
 block content 
     h1=title 
     form(action="", method="POST")
+        -console.log(book)
+        -console.log('now author')
+        -console.log(authors)
         .form-group 
             label(for="title") Book Title :
             input#title.form-control(type='text' name='title' value = (undefined === book ? '' : book.title) )
@@ -11,15 +14,15 @@ block content
             select#author.form-control(type='select', name='author' required) 
                 each author in authors 
                     if book 
-                        option(value=author._id selected=( (book.author.toString() == author._id.toString()) ? 'selected' : false )) #{author.name}
+                        option(value=author._id selected=( (book.author.toString() == author._id.toString() || book.author._id.toString() == author._id.toString() ) ? 'selected' : false ) ) #{author.name}
                     else 
                         option(value=author._id) #{author.name}
         .form-group 
             label(for='summary') Summary : 
-            input#summary.form-control(type='textarea' name='summary')
+            input#summary.form-control(type='textarea' name='summary' value=(undefined === book ? '' : book.summary) )
         .form-group 
             label(for='isbn') ISBN : 
-            input#isbn.form-control(type='text' name='isbn') 
+            input#isbn.form-control(type='text' name='isbn' value=(undefined === book ? '' : book.isbn) ) 
         .form-group
             label(for='genre') Genre : 
             each genre in genres
