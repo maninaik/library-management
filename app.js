@@ -3,7 +3,10 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+var helmet = require('helmet');
+var compression = require('compression');
+
 
 
 var indexRouter = require('./routes/index');
@@ -11,6 +14,7 @@ var usersRouter = require('./routes/users');
 var catalogRouter = require('./routes/catalog')
 
 var app = express();
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -24,13 +28,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+//for production 
+app.use(compression());
+app.use(helmet());
+
 //for static files
 app.use(express.static(path.join(__dirname, 'public')));
 
 //db
 
+var db_password = ''; //here you need to put the password of your mongo DB user you will create.
 //database url 
-var mongodb = 'mongodb+srv://libraryManagementUser:12345@cluster0.brvbr.mongodb.net/library-management-db?retryWrites=true&w=majority'
+var dev_db = 'mongodb+srv://libraryManagementUser:'+db_password+'@cluster0.brvbr.mongodb.net/library-management-db?retryWrites=true&w=majority'
+var mongodb = process.env.MONGODB_URI || dev_db;  
 
 
 mongoose.connect(mongodb, {
